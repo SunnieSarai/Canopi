@@ -1,28 +1,30 @@
-project-root/
 │
 ├── client/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── api/
-│   │   └── main.tsx
 │   ├── index.html
-│   └── package.json
+│   ├── src/
+│   │   ├── main.tsx
+│   │   ├── App.tsx
+│   │   ├── components/
+│   │   │   ├── GardenList.tsx
+│   │   │   ├── GardenCard.tsx
+│   │   │   ├── SeedCard.tsx
+│   │   │   ├── TaskItem.tsx
+│   │   └── api/
+│   │       └── api.ts
+│   └── vite.config.ts
 │
 ├── server/
-│   ├── src/
-│   │   ├── routes/
-│   │   ├── controllers/
-│   │   ├── models/
-│   │   ├── server.ts
-│   │   └── database.ts
-│   └── package.json
-│
-├── shared/ (optional but tiny)
-│   └── types.ts
+│   ├── server.ts
+│   ├── db/
+│   │   └── connect.ts
+│   ├── models/
+│   │   └── Garden.ts
+│   ├── controllers/
+│   │   └── gardenController.ts
+│   └── routes/
+│       └── gardenRoutes.ts
 │
 └── package.json
-
 | FILE/FOLDER    | PURPOSE                | NOTES                     |
 | -------------- | ---------------------- | ------------------------- |
 | `/client`      | React frontend         | Vite + TS                 |
@@ -30,61 +32,33 @@ project-root/
 | `package.json` | workspace + scripts    | Monorepo-compatible       |
 
 
-DAY 1 (Today)
-🚀 Goal: Full Backend MVP Working
+Day 1: Server scaffold + core endpoints
 
-Set up repo + monorepo
+server.ts → start Express
 
-Create models & routes
+connect.ts → MongoDB connection
 
-Implement controllers:
+models → Garden with nested Seeds and Tasks
 
-createGarden
+controllers → stub functions for createGarden, getGardens, addSeed, addTask, deleteTask
 
-getGardens
+routes → wire endpoints to stubs
 
-addSeed
+Goal by end of Day 1: Running server, endpoints respond (even if just stubs)
 
-addTask
 
-(optional) deletions
-
-Test routes in Postman
-
-MVP backend DONE.
-
-DAY 2 (Tomorrow)
-🚀 Goal: Full Frontend MVP Working
-
-Build card UI (hardcode sample data first)
-
-Integrate API calls
-
-GardenList → GardenCard → SeedCard working
-
-User can:
-
-create garden
-
-add seed
-
-add tasks
-
-delete tasks (flower animation optional)
-
-MVP UI DONE.
-
-DAY 3 (Thursday)
-🚀 Goal: Polish + Presentation
-
-Add loading + empty states
-
-Basic CSS
-
-Replace seed → flower when tasks complete
-
-Add minimal tests (Vitest)
-
-Submit Thursday night
-
-DONE.
+server/
+├── package.json
+├── tsconfig.json
+├── .env                     # store MONGO_URI and other secrets
+├── src/
+│   ├── server.ts            # entry point: sets up Express, middleware, routes
+│   ├── db/
+│   │   └── connect.ts       # establishes MongoDB connection
+│   ├── models/
+│   │   └── Garden.ts        # Mongoose schema for Garden → Seeds → Tasks
+│   ├── controllers/
+│   │   └── gardenController.ts  # functions handling CRUD operations
+│   └── routes/
+│       └── gardenRoutes.ts  # Express routes that call controller functions
+└── dist/                     # compiled JS after tsc

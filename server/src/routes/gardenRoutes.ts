@@ -5,10 +5,10 @@ const router = express.Router();
 
 /**
  * Routes:
- * POST   /api/gardens                 -> createGarden
- * GET    /api/gardens                 -> getGardens (single call returns nested seeds & tasks)
- * POST   /api/gardens/:gardenId/seeds -> addSeed
- * POST   /api/seeds/:seedId/tasks     -> addTask
+ * POST   /api/gardens                 createGarden
+ * GET    /api/gardens                 getGardens (single call returns nested seeds & tasks)
+ * POST   /api/gardens/:gardenId/seeds addSeed
+ * POST   /api/seeds/:seedId/tasks     addTask
  * DELETE /api/seeds/:seedId/tasks/:taskId -> deleteTask
  */
 

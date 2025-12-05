@@ -28,21 +28,34 @@ export const addSeed = async (req: Request, res: Response) => {
   res.status(201).json(garden);
 };
 
-// Add a task to a seed
 export const addTask = async (req: Request, res: Response) => {
-  const { seedId } = req.params;
-  const { text } = req.body;
+  try {
+    const { seedId } = req.params;
+    const { text } = req.body;
 
-  const garden = await Garden.findOne({ "seeds._id": seedId });
-  if (!garden) return res.status(404).json({ message: "Seed not found" });
+    if (!text) return res.status(400).json({ message: "Task text is required" });
 
-  const seed = garden.seeds.id(seedId);
-  seed?.tasks.push({ text });
-  await garden.save();
-  res.status(201).json(seed);
+    // Find the garden that has this seed
+    const garden = await Garden.findOne({ "seeds._id": seedId });
+    if (!garden) return res.status(404).json({ message: "Seed not found" });
+
+    // Find the seed
+    const seed = garden.seeds.id(seedId);
+    if (!seed) return res.status(404).json({ message: "Seed not found in garden" });
+
+    // Add the task
+    seed.tasks.push({ text });
+
+    // Save
+    await garden.save();
+
+    // Return only the updated seed
+    res.status(201).json(seed);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", error });
+  }
 };
-
-// Delete a task from a seed
 export const deleteTask = async (req: Request, res: Response) => {
   try {
     const { seedId, taskId, gardenId } = req.params;

@@ -75,23 +75,33 @@ body {
 }
 
 /* Seed cards */
-.seed-list { display:flex; flex-direction:column; gap:8px; }
+.seed-list { 
+  display:flex; 
+  flex-wrap: wrap; 
+  gap:8px;
+ }
 .seed-card {
   background: var(--accent-green);
   border-radius:10px;
   padding:10px;
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  border:1px solid rgba(0,0,0,0.03);
+  flex-direction: column; /* stack seed info + tasks vertically */
+  gap: 6px;
+  border: 1px solid rgba(0,0,0,0.03);
+  flex: 1 1 180px;        /* allows card to shrink/grow with available space */
+  min-width: 160px;       /* ensures cards don’t get too narrow */
 }
 .seed-left { display:flex; flex-direction:column; gap:6px; }
 .seed-name { font-weight:600; color:#2f4a3a; }
 .seed-plot { font-size:12px; color:#6b4b3f; }
 
 /* Tasks inside seed */
-.task-list { margin-top:6px; display:flex; gap:8px; flex-wrap:wrap; }
+.task-list {
+  display: flex;
+  flex-wrap: wrap;        /* wrap tasks if they overflow */
+  gap: 6px;
+  margin-top: 6px;
+}
 .task-item {
   background: var(--accent-pink);
   padding:6px 8px;
@@ -101,7 +111,8 @@ body {
 }
 
 /* Forms */
-.form-row { display:flex; gap:8px; margin-top:8px; }
+.form-row { display:flex; gap:6px; flex-wrap: wrap; }
+
 .input, .select {
   padding:8px;
   border-radius:8px;
@@ -110,7 +121,13 @@ body {
   outline:none;
   font-size:13px;
 }
+.form-row .input {
+  flex: 1 1 60%;          /* input takes majority of width */
+}
 
+.form-row .btn {
+  flex: 1 1 35%;          /* button takes remaining width, wraps if needed */
+}
 .btn {
   background: var(--accent-brown);
   color:white;

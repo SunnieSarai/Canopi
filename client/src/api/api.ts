@@ -26,8 +26,28 @@ export async function addSeed(gardenId: string, payload: { name: string; plot?: 
   return res.json();
 }
 
+// export async function addTask(seedId: string, payload: { text: string }) {
+//   const res = await fetch(`${API_BASE}/seeds/${seedId}/tasks`, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(payload),
+//   });
+//   if (!res.ok) throw new Error("Add task failed");
+//   return res.json();
+// }
+
+// export async function deleteTask(seedId: string, taskId: string, gardenId?: string) {
+//   // your server delete route expects /seeds/:seedId/tasks/:taskId
+//   const res = await fetch(`${API_BASE}/seeds/${seedId}/tasks/${taskId}`, {
+//     method: "DELETE",
+//   });
+//   if (!res.ok) throw new Error("Delete task failed");
+//   return res.json();
+// }
+
 export async function addTask(seedId: string, payload: { text: string }) {
-  const res = await fetch(`${API_BASE}/seeds/${seedId}/tasks`, {
+  // prepend /gardens because your routes are mounted under /api/gardens
+  const res = await fetch(`${API_BASE}/gardens/seeds/${seedId}/tasks`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -36,9 +56,8 @@ export async function addTask(seedId: string, payload: { text: string }) {
   return res.json();
 }
 
-export async function deleteTask(seedId: string, taskId: string, gardenId?: string) {
-  // your server delete route expects /seeds/:seedId/tasks/:taskId
-  const res = await fetch(`${API_BASE}/seeds/${seedId}/tasks/${taskId}`, {
+export async function deleteTask(seedId: string, taskId: string) {
+  const res = await fetch(`${API_BASE}/gardens/seeds/${seedId}/tasks/${taskId}`, {
     method: "DELETE",
   });
   if (!res.ok) throw new Error("Delete task failed");

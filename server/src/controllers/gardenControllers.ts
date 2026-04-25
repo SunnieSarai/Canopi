@@ -58,10 +58,10 @@ export const addTask = async (req: Request, res: Response) => {
 };
 export const deleteTask = async (req: Request, res: Response) => {
   try {
-    const { seedId, taskId, gardenId } = req.params;
+    const { seedId, taskId } = req.params;
 
     // Find the garden
-    const garden = await Garden.findById(gardenId);
+    const garden = await Garden.findOne({ "seeds._id": seedId });
     if (!garden) return res.status(404).json({ message: "Garden not found" });
 
     // Find the seed inside the garden

@@ -129,22 +129,9 @@ npm run build
 cd ../server
 npm run build
 
-# Start production server
-npm run start
-📡 API Reference
-Method	Endpoint	Description
-GET	/api/gardens	Get all gardens
-POST	/api/gardens	Create a new garden
-DELETE	/api/gardens/:gardenId	Delete a garden
-POST	/api/gardens/:gardenId/plots	Add a plot to a garden
-DELETE	/api/gardens/:gardenId/plots/:plotId	Delete a plot
-POST	/api/gardens/:gardenId/plots/:plotId/seeds	Add a seed to a plot
-DELETE	/api/gardens/:gardenId/plots/:plotId/seeds/:seedId	Delete a seed
-POST	/api/gardens/:gardenId/plots/:plotId/seeds/:seedId/tasks	Add a task to a seed
-DELETE	/api/gardens/:gardenId/plots/:plotId/seeds/:seedId/tasks/:taskId	Delete a task
-PATCH	/api/gardens/:gardenId/plots/:plotId/seeds/:seedId/tasks/:taskId/toggle	Toggle task completion
+
 🌟 Stretch Goals
-1. Edit Features
+    1. Edit Features
 ✏️ Edit Garden names
 
 ✏️ Edit Plot names
@@ -157,7 +144,7 @@ PATCH	/api/gardens/:gardenId/plots/:plotId/seeds/:seedId/tasks/:taskId/toggle	To
 
 Implementation approach: Add PUT endpoints for each level, then add edit buttons or inline editing in the UI.
 
-2. More Animations
+  2. More Animations
 🍃 Floating grass particles
 
 🌸 Moving flower petals when tasks complete
@@ -168,7 +155,7 @@ Implementation approach: Add PUT endpoints for each level, then add edit buttons
 
 Implementation approach: Use CSS keyframes + Framer Motion or React Spring for complex animations.
 
-3. AI Brainstorming (Python Integration)
+  3. AI Brainstorming (Python Integration)
 🤖 Natural language processing for goal breakdown
 
 💡 AI suggests Plots based on Garden name
@@ -185,7 +172,7 @@ Connect via REST API from Node backend
 
 Use OpenAI API or open-source LLM
 
-4. User Authentication (OAuth)
+  4. User Authentication (OAuth)
 🔐 Sign in with Google / GitHub / Apple
 
 👤 Personalized gardens per user
@@ -194,7 +181,7 @@ Use OpenAI API or open-source LLM
 
 Implementation approach: Passport.js with OAuth strategies + JWT sessions.
 
-5. "Fence" Feature (Visual Separation)
+  5. "Fence" Feature (Visual Separation)
 🪵 Wooden fence borders around each Garden
 
 🌿 Trellis dividers between Plots
@@ -214,6 +201,8 @@ Phase 3: Add OAuth + User accounts
 Phase 4: Real-time sync with WebSockets
                 ↓
 Phase 5: Mobile app (React Native)
+
+
 🤝 Contributing
 Canopi is an open-source project. To contribute:
 
@@ -228,10 +217,9 @@ Push to the branch (git push origin feature/amazing-feature)
 Open a Pull Request
 
 📄 License
-MIT © Sara Iroberson
+MIT © Sarai Roberson
 
 🙏 Acknowledgments
-Botanical metaphor inspired by "chunking" techniques in neurodivergent productivity
 
 Bloom animation inspired by the joy of small wins
 

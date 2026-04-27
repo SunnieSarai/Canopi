@@ -1,56 +1,203 @@
-import React, { useMemo, useState } from "react";
-import SeedCard from "./SeedCard";
-import { addSeed } from "../api/api";
+import React, { useState } from "react";
+import PlotCard from "./PlotCard";
+import { addPlot, deleteGarden } from "../api/api";
 
-type Task = { _id: string; text: string };
-type Seed = { _id: string; name: string; displayId?: number; plot?: string; tasks: Task[] };
-type Garden = { _id: string; name: string; location?: string; seeds: Seed[] };
+type Task = { _id: string; text: string; completed: boolean };
+type Seed = { _id: string; name: string; tasks: Task[] };
+type Plot = { _id: string; name: string; seeds: Seed[] };
+type Garden = { _id: string; name: string; location?: string; plots: Plot[] };
 
 export default function GardenCard({ garden, onRefresh }: { garden: Garden; onRefresh?: () => void }) {
-  const [seedName, setSeedName] = useState("");
-  const [plot, setPlot] = useState("");
-  const grouped = useMemo(() => {
-    // group seeds by plot (empty -> "General")
-    const map = new Map<string, Seed[]>();
-    garden.seeds?.forEach(s => {
-      const p = s.plot || "General";
-      if (!map.has(p)) map.set(p, []);
-      map.get(p)!.push(s);
-    });
-    return map;
-  }, [garden.seeds]);
+  const [showAddPlot, setShowAddPlot] = useState(false);
+  const [newPlotName, setNewPlotName] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
 
-  const handleAddSeed = async () => {
-    if (!seedName.trim()) return;
+  const handleAddPlot = async () => {
+    if (!newPlotName.trim()) return;
+    setIsAdding(true);
     try {
-      await addSeed(garden._id, { name: seedName.trim(), plot, displayId: Date.now() % 100000 }); // simple displayId
-      setSeedName("");
-      setPlot("");
+      await addPlot(garden._id, { name: newPlotName.trim() });
+      setNewPlotName("");
+      setShowAddPlot(false);
       onRefresh?.();
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleDeleteGarden = async () => {
+    if (confirm(`Delete garden "${garden.name}" and everything inside it?`)) {
+      try {
+        await deleteGarden(garden._id);
+        onRefresh?.();
+      } catch (e) {
+        console.error(e);
+      }
+    }
   };
 
   return (
-    <article className="garden-card">
-      <div className="garden-title">
-        <h2>{garden.name}</h2>
-        <div className="garden-meta">{garden.location || ""}</div>
-      </div>
-
-      {[...grouped.entries()].map(([plotName, seeds]) => (
-        <section className="plot-group" key={plotName}>
-          <div className="plot-title">{plotName}</div>
-          <div className="seed-list">
-            {seeds.map(seed => <SeedCard key={seed._id} seed={seed} gardenId={garden._id} onRefresh={onRefresh} />)}
+    <div className="garden-card" style={{
+      background: "#252b1f",
+      borderRadius: "16px",
+      padding: "1.25rem",
+      marginBottom: "1.5rem",
+      borderLeft: "4px solid #7cb342"
+    }}>
+      {/* Garden Header */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "1rem"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <span style={{ fontSize: "1.5rem" }}>🏡</span>
+          <div>
+            <h2 style={{
+              fontSize: "1.25rem",
+              color: "#7cb342",
+              margin: 0,
+              fontFamily: "'DM Serif Display', serif"
+            }}>
+              {garden.name}
+            </h2>
+            {garden.location && (
+              <span style={{ fontSize: "0.7rem", opacity: 0.5 }}>{garden.location}</span>
+            )}
           </div>
-        </section>
-      ))}
-
-      <div className="form-row">
-        <input className="input" placeholder="Seed name" value={seedName} onChange={e => setSeedName(e.target.value)} />
-        <input className="input" placeholder="Plot (e.g., Daughter)" value={plot} onChange={e => setPlot(e.target.value)} />
-        <button className="btn" onClick={handleAddSeed}>Plant Seed</button>
+          <span style={{
+            fontSize: "0.65rem",
+            opacity: 0.4,
+            textTransform: "uppercase"
+          }}>
+            Garden
+          </span>
+        </div>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <button
+            onClick={() => setShowAddPlot(!showAddPlot)}
+            style={{
+              padding: "0.375rem 0.75rem",
+              background: "rgba(124, 179, 66, 0.2)",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontSize: "0.75rem",
+              color: "#7cb342",
+              fontWeight: "bold"
+            }}
+          >
+            + Plot
+          </button>
+          <button
+            onClick={handleDeleteGarden}
+            style={{
+              padding: "0.375rem",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "1rem",
+              color: "#8b8c7a",
+              borderRadius: "6px"
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.color = "#ef4444"}
+            onMouseLeave={(e) => e.currentTarget.style.color = "#8b8c7a"}
+          >
+            🗑️
+          </button>
+        </div>
       </div>
-    </article>
+
+      {/* Add Plot Form */}
+      {showAddPlot && (
+        <div style={{
+          marginBottom: "1rem",
+          padding: "0.75rem",
+          background: "rgba(26, 31, 22, 0.6)",
+          borderRadius: "12px"
+        }}>
+          <input
+            type="text"
+            value={newPlotName}
+            onChange={(e) => setNewPlotName(e.target.value)}
+            placeholder="Plot name (e.g., Land a Job, Write a Book)"
+            style={{
+              width: "100%",
+              padding: "0.5rem",
+              background: "#1a1f16",
+              border: "1px solid rgba(90, 107, 60, 0.4)",
+              borderRadius: "8px",
+              color: "#e8e4d9",
+              fontSize: "0.75rem",
+              marginBottom: "0.5rem"
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleAddPlot();
+              if (e.key === "Escape") setShowAddPlot(false);
+            }}
+            autoFocus
+          />
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button
+              onClick={handleAddPlot}
+              disabled={isAdding}
+              style={{
+                padding: "0.375rem 0.75rem",
+                background: "#7cb342",
+                border: "none",
+                borderRadius: "6px",
+                color: "#1a1f16",
+                fontSize: "0.7rem",
+                fontWeight: "bold",
+                cursor: "pointer"
+              }}
+            >
+              {isAdding ? "Adding..." : "Add Plot"}
+            </button>
+            <button
+              onClick={() => setShowAddPlot(false)}
+              style={{
+                padding: "0.375rem 0.75rem",
+                background: "transparent",
+                border: "1px solid rgba(90, 107, 60, 0.4)",
+                borderRadius: "6px",
+                color: "#e8e4d9",
+                fontSize: "0.7rem",
+                cursor: "pointer"
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Plots List */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        {garden.plots && garden.plots.length > 0 ? (
+          garden.plots.map((plot) => (
+            <PlotCard
+              key={plot._id}
+              gardenId={garden._id}
+              plot={plot}
+              onRefresh={onRefresh || (() => {})}
+            />
+          ))
+        ) : (
+          <p style={{
+            fontSize: "0.75rem",
+            color: "rgba(90, 107, 60, 0.6)",
+            fontStyle: "italic",
+            textAlign: "center",
+            padding: "1rem"
+          }}>
+            No plots yet – add one to start planning!
+          </p>
+        )}
+      </div>
+    </div>
   );
 }

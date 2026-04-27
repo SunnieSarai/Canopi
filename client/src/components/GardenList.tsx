@@ -2,9 +2,15 @@ import React, { useEffect, useState } from "react";
 import { getGardens, createGarden } from "../api/api";
 import GardenCard from "./GardenCard";
 
-type Task = { _id: string; text: string };
-type Seed = { _id: string; name: string; displayId?: number; plot?: string; tasks: Task[] };
-type Garden = { _id: string; name: string; location?: string; seeds: Seed[] };
+type Task = { _id: string; text: string; completed: boolean };
+type Plot = { _id: string; name: string; seeds: Seed[] };
+type Seed = { _id: string; name: string; tasks: Task[] };
+type Garden = { 
+  _id: string; 
+  name: string; 
+  location?: string; 
+  plots: Plot[];  // New structure
+};
 
 export default function GardenList(): JSX.Element {
   const [gardens, setGardens] = useState<Garden[]>([]);

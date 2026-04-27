@@ -1,8 +1,9 @@
 
 import { Request, Response } from "express";
-import Garden  from "../models/gardenModels";
+import Garden from "../models/gardenModels";
 
-// Get all gardens with seeds and tasks
+// ===== GARDEN LEVEL =====
+// Get all gardens
 export const getGardens = async (req: Request, res: Response) => {
   const gardens = await Garden.find();
   res.json(gardens);
@@ -11,72 +12,141 @@ export const getGardens = async (req: Request, res: Response) => {
 // Create a new garden
 export const createGarden = async (req: Request, res: Response) => {
   const { name, location } = req.body;
-  const garden = new Garden({ name, location, seeds: [] });
+  const garden = new Garden({ name, location, plots: [] });
   await garden.save();
   res.status(201).json(garden);
 };
 
-// Add a seed to a garden
-export const addSeed = async (req: Request, res: Response) => {
+// Delete a garden (and all its plots/seeds/tasks)
+export const deleteGarden = async (req: Request, res: Response) => {
   const { gardenId } = req.params;
-  const { name, displayId } = req.body; // displayId can start at 100
+  const garden = await Garden.findByIdAndDelete(gardenId);
+  if (!garden) return res.status(404).json({ message: "Garden not found" });
+  res.status(200).json({ message: "Garden deleted successfully" });
+};
+
+// ===== PLOT LEVEL =====
+// Add a plot to a garden
+export const addPlot = async (req: Request, res: Response) => {
+  const { gardenId } = req.params;
+  const { name } = req.body;
+
   const garden = await Garden.findById(gardenId);
   if (!garden) return res.status(404).json({ message: "Garden not found" });
 
-  garden.seeds.push({ name, displayId, tasks: [] });
+  garden.plots.push({ name, seeds: [] });
   await garden.save();
   res.status(201).json(garden);
 };
 
-export const addTask = async (req: Request, res: Response) => {
-  try {
-    const { seedId } = req.params;
-    const { text } = req.body;
+// Delete a plot (and all its seeds/tasks)
+export const deletePlot = async (req: Request, res: Response) => {
+  const { gardenId, plotId } = req.params;
 
-    if (!text) return res.status(400).json({ message: "Task text is required" });
+  const garden = await Garden.findById(gardenId);
+  if (!garden) return res.status(404).json({ message: "Garden not found" });
 
-    // Find the garden that has this seed
-    const garden = await Garden.findOne({ "seeds._id": seedId });
-    if (!garden) return res.status(404).json({ message: "Seed not found" });
+  const plot = garden.plots.id(plotId);
+  if (!plot) return res.status(404).json({ message: "Plot not found" });
 
-    // Find the seed
-    const seed = garden.seeds.id(seedId);
-    if (!seed) return res.status(404).json({ message: "Seed not found in garden" });
-
-    // Add the task
-    seed.tasks.push({ text });
-
-    // Save
-    await garden.save();
-
-    // Return only the updated seed
-    res.status(201).json(seed);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error", error });
-  }
+  plot.deleteOne();
+  await garden.save();
+  res.status(200).json({ message: "Plot deleted successfully" });
 };
+
+// ===== SEED LEVEL (inside a plot) =====
+// Add a seed to a plot
+export const addSeedToPlot = async (req: Request, res: Response) => {
+  const { gardenId, plotId } = req.params;
+  const { name } = req.body;
+
+  const garden = await Garden.findById(gardenId);
+  if (!garden) return res.status(404).json({ message: "Garden not found" });
+
+  const plot = garden.plots.id(plotId);
+  if (!plot) return res.status(404).json({ message: "Plot not found" });
+
+  plot.seeds.push({ name, tasks: [] });
+  await garden.save();
+  res.status(201).json(garden);
+};
+
+// Delete a seed (and all its tasks)
+export const deleteSeed = async (req: Request, res: Response) => {
+  const { gardenId, plotId, seedId } = req.params;
+
+  const garden = await Garden.findById(gardenId);
+  if (!garden) return res.status(404).json({ message: "Garden not found" });
+
+  const plot = garden.plots.id(plotId);
+  if (!plot) return res.status(404).json({ message: "Plot not found" });
+
+  const seed = plot.seeds.id(seedId);
+  if (!seed) return res.status(404).json({ message: "Seed not found" });
+
+  seed.deleteOne();
+  await garden.save();
+  res.status(200).json({ message: "Seed deleted successfully" });
+};
+
+// ===== TASK LEVEL (inside a plot's seed) =====
+// Add a task to a seed
+export const addTaskToSeed = async (req: Request, res: Response) => {
+  const { gardenId, plotId, seedId } = req.params;
+  const { text } = req.body;
+
+  const garden = await Garden.findById(gardenId);
+  if (!garden) return res.status(404).json({ message: "Garden not found" });
+
+  const plot = garden.plots.id(plotId);
+  if (!plot) return res.status(404).json({ message: "Plot not found" });
+
+  const seed = plot.seeds.id(seedId);
+  if (!seed) return res.status(404).json({ message: "Seed not found" });
+
+  seed.tasks.push({ text, completed: false });
+  await garden.save();
+  res.status(201).json(seed);
+};
+
+// Delete a task
 export const deleteTask = async (req: Request, res: Response) => {
-  try {
-    const { seedId, taskId } = req.params;
+  const { gardenId, plotId, seedId, taskId } = req.params;
 
-    // Find the garden
-    const garden = await Garden.findOne({ "seeds._id": seedId });
-    if (!garden) return res.status(404).json({ message: "Garden not found" });
+  const garden = await Garden.findById(gardenId);
+  if (!garden) return res.status(404).json({ message: "Garden not found" });
 
-    // Find the seed inside the garden
-    const seed = garden.seeds.id(seedId);
-    if (!seed) return res.status(404).json({ message: "Seed not found" });
+  const plot = garden.plots.id(plotId);
+  if (!plot) return res.status(404).json({ message: "Plot not found" });
 
-    // Instead of task.remove(), use pull
-    seed.tasks.pull(taskId);
+  const seed = plot.seeds.id(seedId);
+  if (!seed) return res.status(404).json({ message: "Seed not found" });
 
-    // Save the parent document
-    await garden.save();
+  const task = seed.tasks.id(taskId);
+  if (!task) return res.status(404).json({ message: "Task not found" });
 
-    res.status(200).json({ message: "Task deleted successfully", seed });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error", error });
-  }
+  task.deleteOne();
+  await garden.save();
+  res.status(200).json({ message: "Task deleted successfully" });
+};
+
+// Toggle task completion (for the checkbox)
+export const toggleTaskCompletion = async (req: Request, res: Response) => {
+  const { gardenId, plotId, seedId, taskId } = req.params;
+
+  const garden = await Garden.findById(gardenId);
+  if (!garden) return res.status(404).json({ message: "Garden not found" });
+
+  const plot = garden.plots.id(plotId);
+  if (!plot) return res.status(404).json({ message: "Plot not found" });
+
+  const seed = plot.seeds.id(seedId);
+  if (!seed) return res.status(404).json({ message: "Seed not found" });
+
+  const task = seed.tasks.id(taskId);
+  if (!task) return res.status(404).json({ message: "Task not found" });
+
+  task.completed = !task.completed;
+  await garden.save();
+  res.status(200).json(task);
 };

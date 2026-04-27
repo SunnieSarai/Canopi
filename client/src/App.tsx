@@ -1,12 +1,13 @@
 import React from "react";
 import GardenList from "./components/GardenList";
+import GuidePanel from './components/GuidePanel';
 
 function App(): JSX.Element {
   return (
-    <div className="app-shell">
+    <div className="app-container">
       <header className="app-header">
-        <h1>Mind Garden</h1>
-        <p className="subtitle">Plan gently. Grow steadily.</p>
+        <h1>🌿 Canopi</h1>
+        <p className="subtitle">Grow your goals from seed to bloom</p>
       </header>
 
       <main>
@@ -14,8 +15,9 @@ function App(): JSX.Element {
       </main>
 
       <footer className="app-footer">
-        <small>Mind Garden — visual planning for neurodivergent brains</small>
+        <small>Canopi — break big goals into small, blooming steps</small>
       </footer>
+      <GuidePanel />
     </div>
   );
 }

@@ -1,170 +1,289 @@
-:root{
-  --bg: #fffaf6;
-  --card: #fff6f8;
-  --accent-pink: #f7c6d6;
-  --accent-green: #d8efdd;
-  --accent-brown: #c9a98a;
-  --text: #2b2b2b;
-  --muted: #6b6b6b;
-  --border: #e8e2de;
-  --radius: 12px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700&display=swap');
 
-* {box-sizing: border-box;}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
-  margin: 0;
-  background: linear-gradient(180deg, var(--bg), #fbfaf8);
-  color: var(--text);
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+  font-family: 'Nunito', sans-serif;
+  background-color: #1a1f16;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.08"><path fill="%237cb342" d="M50,100 C50,80 70,60 90,70 C100,75 105,90 100,100 C95,110 80,115 70,110 C60,105 50,100 50,100 Z M140,80 C130,60 150,40 170,50 C180,55 185,70 180,80 C175,90 160,95 150,90 C140,85 135,80 140,80 Z M30,150 C20,130 40,110 60,120 C70,125 75,140 70,150 C65,160 50,165 40,160 C30,155 25,150 30,150 Z M170,150 C160,130 180,110 200,120 C210,125 215,140 210,150 C205,160 190,165 180,160 C170,155 165,150 170,150 Z"/></svg>');
+  background-repeat: repeat;
+  background-size: 120px;
+  color: #e8e4d9;
+  line-height: 1.5;
 }
 
-.app-shell {
-  max-width: 1100px;
-  margin: 28px auto;
-  padding: 20px;
+h1, h2, h3, .serif {
+  font-family: 'DM Serif Display', serif;
+  font-weight: normal;
 }
 
-.app-header {
-  display:flex;
-  align-items:baseline;
-  justify-content:space-between;
-  gap:16px;
-  margin-bottom:22px;
-}
-.app-header h1 { margin:0; font-size:28px; color:#8b5e5a; }
-.subtitle { margin:0; color:var(--muted); font-size:14px; }
-
-/* Grid for gardens */
-.garden-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 18px;
-}
-
-/* Garden card */
+/* ----- Garden Card ----- */
 .garden-card {
-  background: linear-gradient(180deg, var(--card), #fff);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-}
-.garden-card .garden-title {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:12px;
-}
-.garden-card h2 { margin:0; font-size:18px; color:#6b3f3b; }
-.garden-card .garden-meta { font-size:13px; color:var(--muted); }
-
-/* Plot group */
-.plot-group {
-  margin-top:10px;
-  padding-top:8px;
-  border-top:1px dashed rgba(0,0,0,0.04);
-}
-.plot-title {
-  font-weight:600;
-  font-size:13px;
-  color:#5a3a36;
-  margin:8px 0;
+  background: #252b1f;
+  border-radius: 24px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-left: 6px solid #7cb342;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Seed cards */
-.seed-list { 
-  display:flex; 
-  flex-wrap: wrap; 
-  gap:8px;
- }
+.garden-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+}
+
+/* ----- Plot Card (inside garden) ----- */
+.plot-card {
+  background: rgba(37, 43, 31, 0.7);
+  border-radius: 20px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(124, 179, 66, 0.2);
+  backdrop-filter: blur(2px);
+}
+
+/* ----- Seed Card ----- */
 .seed-card {
-  background: var(--accent-green);
-  border-radius:10px;
-  padding:10px;
-  display:flex;
-  flex-direction: column; /* stack seed info + tasks vertically */
-  gap: 6px;
-  border: 1px solid rgba(0,0,0,0.03);
-  flex: 1 1 180px;        /* allows card to shrink/grow with available space */
-  min-width: 160px;       /* ensures cards don’t get too narrow */
-}
-.seed-left { display:flex; flex-direction:column; gap:6px; }
-.seed-name { font-weight:600; color:#2f4a3a; }
-.seed-plot { font-size:12px; color:#6b4b3f; }
-
-/* Tasks inside seed */
-.task-list {
-  display: flex;
-  flex-wrap: wrap;        /* wrap tasks if they overflow */
-  gap: 6px;
-  margin-top: 6px;
-}
-.task-item {
-  background: var(--accent-pink);
-  padding:6px 8px;
-  border-radius:8px;
-  font-size:13px;
-  color:#3b2b2b;
+  background: rgba(26, 31, 22, 0.8);
+  border-radius: 16px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(90, 107, 60, 0.3);
+  transition: all 0.2s;
 }
 
-/* Forms */
-.form-row { display:flex; gap:6px; flex-wrap: wrap; }
-
-.input, .select {
-  padding:8px;
-  border-radius:8px;
-  border:1px solid var(--border);
-  background:transparent;
-  outline:none;
-  font-size:13px;
-}
-.form-row .input {
-  flex: 1 1 60%;          /* input takes majority of width */
-}
-
-.form-row .btn {
-  flex: 1 1 35%;          /* button takes remaining width, wraps if needed */
-}
-.btn {
-  background: var(--accent-brown);
-  color:white;
-  padding:8px 10px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-}
-.btn:disabled { opacity:0.6; cursor:default; }
-
-/* footer */
-.app-footer {
-  margin-top:28px;
-  text-align:center;
-  color:var(--muted);
-}
-
+/* ----- Bloom Animation (seed complete) ----- */
 .bloom-anim {
   animation: bloom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-color: #7cb342;
+  background: rgba(124, 179, 66, 0.15);
 }
 
 @keyframes bloom {
   0% {
     transform: scale(0.95);
-    opacity: 0.5;
+    opacity: 0.6;
+    box-shadow: 0 0 0 0 #7cb342;
+  }
+  50% {
+    transform: scale(1.02);
   }
   100% {
     transform: scale(1);
     opacity: 1;
+    box-shadow: 0 0 8px 2px rgba(124, 179, 66, 0.3);
   }
 }
 
-.task-delete-btn {
-  opacity: 0;
-  transition: opacity 0.2s;
+/* ----- Buttons & Inputs ----- */
+button, .btn {
+  background: #7cb342;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 40px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  color: #1a1f16;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Nunito', sans-serif;
 }
 
-.task-delete-btn:hover {
-  opacity: 1 !important;
+button:hover, .btn:hover {
+  background: #8bc34a;
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(124, 179, 66, 0.4);
+}
+
+input, textarea {
+  background: #1a1f16;
+  border: 1px solid #5a6b3c;
+  padding: 0.5rem 0.75rem;
+  border-radius: 40px;
+  color: #e8e4d9;
+  font-size: 0.85rem;
+  outline: none;
+  font-family: 'Nunito', sans-serif;
+}
+
+input:focus {
+  border-color: #7cb342;
+  box-shadow: 0 0 0 2px rgba(124, 179, 66, 0.2);
+}
+
+/* ----- Fade In Animation ----- */
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ----- Empty State / Guide / Modals ----- */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: rgba(37, 43, 31, 0.6);
+  border-radius: 48px;
+  margin: 2rem auto;
+  max-width: 500px;
+}
+
+.guide-panel {
+  background: #252b1f;
+  border-radius: 32px;
+  padding: 1.5rem;
+  border: 1px solid #5a6b3c;
+  margin-bottom: 2rem;
+}
+
+/* ----- Scrollbar (earthy) ----- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1f16;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #5a6b3c;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7cb342;
+}
+
+/* - Main App Container - */
+#root, .app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+/* - Garden List Container - */
+.garden-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* - Fix for GardenCard width - */
+.garden-card {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* -Plot Cards inside Garden - */
+.plots-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* - Ensure content doesn't touch edges - */
+body {
+  overflow-x: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+/* - Center empty state - */
+.empty-state {
+  text-align: center;
+  margin: 3rem auto;
+  max-width: 500px;
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 700px) {
+  .garden-card {
+    padding: 1rem;
+  }
+  button, .btn {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.7rem;
+  }
+  input {
+    font-size: 0.75rem;
+  }
+}
+
+/* App Container */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Styles */
+.app-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(124, 179, 66, 0.3);
+}
+
+.app-header h1 {
+  font-size: 2.5rem;
+  color: #7cb342;
+  margin-bottom: 0.5rem;
+  font-family: 'DM Serif Display', serif;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Main Content */
+main {
+  flex: 1;
+}
+
+/* Footer Styles */
+.app-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(124, 179, 66, 0.2);
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 1rem;
+  }
+  
+  .app-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .subtitle {
+    font-size: 0.8rem;
+  }
 }

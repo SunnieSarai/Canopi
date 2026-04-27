@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import SeedCard from "./seedCard";
+import SeedCard from "./SeedCard";
 import { addSeed } from "../api/api";
 
 type Task = { _id: string; text: string };
